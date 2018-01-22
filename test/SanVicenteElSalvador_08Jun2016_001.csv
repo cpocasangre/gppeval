@@ -1,0 +1,15 @@
+#Imput file for the Assasment of Power Energy Genaration by using Volumetric Method and Mote Carlo Probabilistic analisis,,,,,,,,,,,,
+#Item,Name_Place,Latitude,Longitude,Reservoir_Properties,Symbol,Units,Min,Most_Likely,Max,Mean,Standar_Desviation,Distribution_Type
+0,San Vicente Area. Chinchontepec,13.605985,-88.854688,ReservoirArea,A,km2,4,6,12,,,T
+1,,,,Thickness,h,m,700,1500,2000,,,T
+2,,,,ReservoirTemperature,Tr,oC,230,240,270,,,T
+3,,,,AbandonTemperature,Ta,oC,135,150,180,,,T
+4,,,,Porosity,Phi,%,,0.06,,0.06,0.02,L
+5,,,,RockSpecificHeat,Cr,kJ/kg-oC,0.85,0.85,0.9,,,T
+6,,,,WaterSpecificHeat ,Cf,kJ/kg-oC,,5.18,,,,C
+7,,,,RockDensity,rho_r,kg/m3,,2500,,,,C
+8,,,,WaterDensity,rho_f,kg/m3,,764.45,,,,C
+9,,,,RecoveryFactor,Rf,%,,0.23,,,,C
+10,,,,ConversionEfficiency,Ce,%,0.1,0.12,0.2,,,T
+11,,,,PowerFactor,Pf,%,0.9,0.95,1,,,T
+12,,,,LifeSpan,t,years,,30,,,,C

@@ -1,0 +1,15 @@
+#Input file for the Assessment of Power Energy Generation by using Volumetric Method and Mote Carlo Probabilistic analysis,,,,,,,,,,,,
+#Item,Name_Place,Latitude,Longitude,Reservoir_Properties,Symbol,Units,Min,Most_Likely,Max,Mean,Standar_Desviation,Distribution_Type
+0,Volcan Azufral,0,0,ReservoirArea,A,km2,5,10,15,0.0,0.0,T
+1,,,,Thickness,h,m,0,300,0,300,70,N
+2,,,,ReservoirTemperature,Tr,oC,200,230,250,0.0,0.0,T
+3,,,,AbandonTemperature,Ta,oC,0.0,140,0.0,140,10,N
+4,,,,Porosity,Phi,%,0.06,0.1,0.12,0.0,0.0,T
+5,,,,RockSpecificHeat,Cr,kJ/kg-oC,0,0.9,0,0.9,0.2,N
+6,,,,WaterSpecificHeat ,Cf,kJ/kg-oC,0,4.2,0,4.2,0.5,N
+7,,,,RockDensity,rho_r,kg/m3,2650,2700,2700,0.0,0.0,T
+8,,,,WaterDensity,rho_f,kg/m3,702,820,840,0.0,0.0,T
+9,,,,RecoveryFactor,Rf,%,0.1,0.1,0.15,0.0,0.0,T
+10,,,,ConversionEfficiency,Ce,%,0.8,0.8,0.9,0.0,0.0,T
+11,,,,PowerFactor,Pf,%,0.8,0.9,0.95,0.0,0.0,T
+12,,,,LifeSpan,t,years,20,25,30,0.0,0.0,T
