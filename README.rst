@@ -30,7 +30,7 @@ or 'easy_install'), otherwise they will need to be installed manually:
 - NumPy_ : Numeric Python
 - SciPy_ : Scientific Python
 - Matplotlib_ : Python plotting library
-- Mcerp : Monte Carlo Error Propagation
+- Mcerp : Monte Carlo Error Propagation (https://github.com/tisimst/mcerp)
 
 These packages come standard in *Python(x,y)*, *Spyder*, and other
 scientific computing python bundles.
