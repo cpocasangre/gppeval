@@ -1,5 +1,6 @@
 """
 Created on Mon Dec 12th 2017
+Last modification: Mon Jan 22nd 2018
 author: Carlos Pocasangre
 """
 
@@ -14,7 +15,12 @@ from beautifultable import BeautifulTable
 
 __version_info__ = (2018, 1, 22, 0, 1)
 __version__ = '.'.join(map(str, __version_info__))
-__author__ = 'Carlos Pocasangre'
+__author__ = 'Carlos O. POCASANGRE JIMENEZ'
+__description__ = 'Geothermal Power Potential assessment'
+__url__ = 'https://github.com/cpocasangre/gppeval'
+__module_name__ = 'gppeval'
+__author_email__ = 'carlos.pocasangre@mine.kyushu-u.ac.jp'
+__license__ = 'MIT License'
 
 
 class Reservoir(object):
@@ -231,7 +237,11 @@ class Thermodynamic(Reservoir):
 
     @staticmethod
     def two_phase_dominant_volumetric_energy(a, h, tr, ta, phi, cr, cf, rho_r, rho_f):
-        """calculate energy available [kJ]"""
+        """
+        calculate energy available [kJ]
+        HINT: This method has not been implemented yet. It uses the same equation as LQDE
+        method (Liquid dominated volumetric energy) has.
+        """
         q = (rho_r * cr * (1.0 - phi) + rho_f * cf * phi) * (a * 1.0e6) * h * (tr - ta)
         return q
 
@@ -962,25 +972,28 @@ class Tools(object):
 
 
 if __name__ == "__main__":
-    # Test 1: Input data manually
+    # Test: Input data manually
     tools = Tools()
     sim = MonteCarloSimulation()
-    gpp1 = GeothermalPowerPlant()
+    plant = GeothermalPowerPlant()
+    plant.set_name('Nombre de Jesus. El Salvador')
+    plant.set_location(lat=14, lon=-88.73)
+    plant.set_area(min=5, most_likely=6, max=7, mean=0, sd=0, pdf='T', doc=5)
+    plant.set_thickness(min=450, most_likely=500, max=600, mean=0.0, sd=0.0, pdf='T')
+    plant.set_reservoir_temp(min=130, most_likely=160, max=163, mean=0.0, sd=0.0, pdf='T')
+    plant.set_abandon_temp(min=0.0, most_likely=80, max=0.0, mean=0.0, sd=0.0, pdf='C')
+    plant.set_porosity(min=0.0, most_likely=0.06, max=0.0, mean=0.06, sd=0.02, pdf='L')
+    plant.set_rock_specific_heat(min=0.85, most_likely=0.85, max=0.9, mean=0.0, sd=0.0,
+                                 pdf='T')
+    plant.set_fluid_specific_heat(min=0, most_likely=5.18, max=0, mean=0.0, sd=0.0, pdf='C')
+    plant.set_rock_density(min=0, most_likely=2500, max=0, mean=0.0, sd=0.0, pdf='C')
+    plant.set_fluid_density(min=0, most_likely=764.45, max=0, mean=0.0, sd=0.0, pdf='C')
+    plant.set_recovery_factor(min=0.0, most_likely=0.23, max=0.0, mean=0.0, sd=0.0, pdf='C')
+    plant.set_conversion_efficiency(min=0.1, most_likely=0.12, max=0.2, mean=0.0, sd=0.0,
+                                    pdf='T')
+    plant.set_plant_net_capacity_factor(min=0.9, most_likely=0.95, max=1.0, mean=0.0, sd=0.0,
+                                        pdf='T')
+    plant.set_lifespan(min=0, most_likely=25, max=0, mean=0.0, sd=0.0, pdf='C')
 
-    gpp1.set_name('Nombre de Jesus. El Salvador')
-    gpp1.set_location(lat=14, lon=-88.73)
-    gpp1.set_area(min=5, most_likely=6, max=7, mean=0, sd=0, pdf='T', doc=5)
-    gpp1.set_thickness(min=450, most_likely=500, max=600, mean=0.0, sd=0.0, pdf='T')
-    gpp1.set_reservoir_temp(min=130, most_likely=160, max=163, mean=0.0, sd=0.0, pdf='T')
-    gpp1.set_abandon_temp(min=0.0, most_likely=80, max=0.0, mean=0.0, sd=0.0, pdf='C')
-    gpp1.set_porosity(min=0.0, most_likely=0.06, max=0.0, mean=0.06, sd=0.02, pdf='L')
-    gpp1.set_rock_specific_heat(min=0.85, most_likely=0.85, max=0.9, mean=0.0, sd=0.0, pdf='T')
-    gpp1.set_fluid_specific_heat(min=0, most_likely=5.18, max=0, mean=0.0, sd=0.0, pdf='C')
-    gpp1.set_rock_density(min=0, most_likely=2500, max=0, mean=0.0, sd=0.0, pdf='C')
-    gpp1.set_fluid_density(min=0, most_likely=764.45, max=0, mean=0.0, sd=0.0, pdf='C')
-    gpp1.set_recovery_factor(min=0.0, most_likely=0.23, max=0.0, mean=0.0, sd=0.0, pdf='C')
-    gpp1.set_conversion_efficiency(min=0.1, most_likely=0.12, max=0.2, mean=0.0, sd=0.0,
-                                   pdf='T')
-    gpp1.set_plant_net_capacity_factor(min=0.9, most_likely=0.95, max=1.0, mean=0.0, sd=0.0,
-                                       pdf='T')
-    gpp1.set_lifespan(min=0, most_likely=25, max=0, mean=0.0, sd=0.0, pdf='C')
+    plant = sim.calc_energy_potential(plant)
+    tools.print_results(plant)
