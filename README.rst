@@ -5,11 +5,11 @@ volumetric method in a liquid-dominated reservoir
 
 ABSTRACT
 ===============================
-A Python stochastic library for assessing geothermal power potential by using
+``Gppeval`` is a Python stochastic library for assessing geothermal power potential by using
 the volumetric method in a liquid dominated reservoir is presented in this
 application. More specifically, the purposes of this study are the use of the
-volumetric method “heat in place” to estimate ability to produce electrical
-energy from geothermal liquid-dominated reservoir, and to code a valuable Python
+volumetric method **“heat in place”** to estimate ability to produce electrical
+energy from geothermal **liquid-dominated reservoir**, and to code a valuable Python
 stochastic library that has the helpful methods for running the simulation. Even
 though there are some kinds of licensed software for carrying out this simulation,
 for this task was selected Open-Source Programming Language, i.e., Python.
@@ -18,9 +18,10 @@ The Geothermal Power Potential Evaluation stochastic library, Gppeval, is struct
 as three essential objects such as the geothermal power plant module, the Monte
 Carlo simulation module, and the module of tools.
 
-For testing the application, a Jupyter Notebook example has been included in the test folder.
+For testing the application, a **Jupyter Notebook** example has been included in the test
+folder.
 
-HINT: For the moment, this application is available only for Python 2.7
+*HINT*: **For the moment, this application is available only for Python 2.7**
 
 INSTALLATION
 ============
