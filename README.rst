@@ -1,4 +1,3 @@
-
 TOPIC
 ===============================
 A Python stochastic library for assessing geothermal power potential by using the
@@ -21,7 +20,9 @@ Carlo simulation module, and the module of tools.
 
 For testing the application, a Jupyter Notebook example has been included in the test folder.
 
-Installation
+HINT: For the moment, this application is available only for Python 2.7
+
+INSTALLATION
 ============
 
 Required Packages
@@ -52,24 +53,18 @@ package (administrative privileges may be required). Keep in mind to use Python 
 
        $ [sudo] python setup.py install
 
-   b. If 'setuptools' is installed, run:
-
-       $ [sudo] easy_install [--upgrade] gppeval
-
-   c. If 'pip' is installed, run:
-
-       $ [sudo] pip install [--upgrade] gppeval
-   
-   d. If 'pip' is installed, run the command in the same folder:
+   b. If 'pip' is installed, run the command in the same folder 'gppeval':
 
        $ pip install [--upgrade] .
 
-Contact
+   c. If 'pip' is installed, run (internet connection is required):
+
+       $ [sudo] pip install [--upgrade] --index-url https://test.pypi.org/simple/ gppeval
+
+CONTACT
 =======
 
-Please send **feature requests, bug reports, or feedback** to:
-
-`Carlos O. POCASANGRE JIMENEZ`_
+Please send **feature requests, bug reports, or feedback** to: `Carlos O. POCASANGRE JIMENEZ`_
 
 
 .. _Monte Carlo methods: http://en.wikipedia.org/wiki/Monte_Carlo_method
