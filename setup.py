@@ -20,22 +20,9 @@ setup(
     license=gppeval.__license__,
     long_description=read(readme),
     packages=find_packages(exclude=['test*']),
-    keywords=[
-        'monte carlo',
-        'latin hypercube',
-        'geothermal power potential',
-        'volumetric method',
-        'heat in place'
-    ],
-    install_requires=[
-        'numpy',
-        'scipy',
-        'matplotlib',
-        'mcerp',
-        'beautifultable'
-        ],
-    classifiers=[
-        'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.7',
-    ],)
+    keywords=['monte carlo', 'latin hypercube', 'geothermal power potential',
+              'volumetric method', 'heat in place'],
+    install_requires=['numpy', 'scipy', 'matplotlib', 'mcerp', 'beautifultable'],
+    classifiers=['Development Status :: 3 - Alpha', 'License :: OSI Approved :: MIT License',
+                 'Programming Language :: Python :: 2.7'],
+    zip_safe=False)
