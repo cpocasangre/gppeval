@@ -27,7 +27,7 @@ setup(
         'volumetric method',
         'heat in place',
         'geothermal reservoir'],
-    install_requires=['numpy', 'scipy', 'matplotlib', 'mcerp', 'beautifultable'],
+    # install_requires=['numpy', 'scipy', 'matplotlib', 'mcerp', 'beautifultable'],
     classifiers=['Development Status :: 3 - Alpha', 'License :: OSI Approved :: MIT License',
                  'Programming Language :: Python :: 2.7'],
     zip_safe=False)
