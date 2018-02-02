@@ -56,11 +56,15 @@ package (administrative privileges may be required). Keep in mind to use Python 
 
    b. If 'pip' is installed, run the command in the same folder 'gppeval':
 
-       $ pip install [--upgrade] .
+       $ [sudo] pip install [--upgrade] .
 
-   c. If 'pip' is installed, run (internet connection is required):
+   c. If 'pip' is installed, run the follow command (stable version and internet connection is required)
 
-       $ [sudo] pip install [--upgrade] --index-url https://test.pypi.org/simple/ gppeval
+       $ [sudo] pip install [--upgrade] gppeval
+
+   d. If 'pip' is installed, run the follow command (developed version and internet connection is required):
+
+       $ [sudo] pip install [--upgrade] [--index-url https://test.pypi.org/simple/] gppeval
 
 CONTACT
 =======
