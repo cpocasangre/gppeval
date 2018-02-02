@@ -13,7 +13,7 @@ from time import clock
 import scipy.stats as ss
 from beautifultable import BeautifulTable
 
-__version_info__ = (2018, 2, 1, 0, 8)
+__version_info__ = (2018, 2, 1, 0, 1, 'dev1')
 __version__ = '.'.join(map(str, __version_info__))
 __author__ = 'Carlos O. POCASANGRE JIMENEZ'
 __description__ = 'Geothermal Power Potential assessment'
