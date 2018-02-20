@@ -1,7 +1,48 @@
+# -*- coding: utf-8 -*-
 """
-Created on Mon Dec 12th 2017
-Last modification: Mon Jan 22nd 2018
-author: Carlos Pocasangre
+Title:
+                    gppeval (geothermal power potential evaluation)
+
+Description:
+                    A Python stochastic library for assessing geothermal power potential by
+                    using the volumetric method in a liquid-dominated reservoir.
+
+Author:
+                    Carlos O. Pocasangre Jimenez
+
+Organization:
+                    Department of Earth Resources Engineering, Graduate School of Engineering,
+                    Kyushu University. 744 Motooka, Nishi-ku, Fukuoka 819-0395, Japan
+
+Date:
+                    Created on Mon Dec 12th 2017
+
+Last modification:
+                    Tue Feb 20th 2018
+
+Version:
+                    2018.2.1.0.13.dev1
+
+Python_version:
+                    2.7
+
+Abstract:
+                    Gppeval is a Python stochastic library for assessing geothermal power
+                    potential by using the volumetric method in a liquid dominated reservoir is
+                    presented in this application. More specifically, the purposes of this
+                    study are the use of the volumetric method heat in place to estimate
+                    ability to produce electrical energy from geothermal liquid-dominated
+                    reservoir, and to code a valuable Python stochastic library that has the
+                    helpful methods for running the simulation. Even though there are some
+                    kinds of licensed software for carrying out this simulation, for this task
+                    was selected Open-Source Programming Language, i.e., Python. The Geothermal
+                    Power Potential Evaluation stochastic library, Gppeval, is structured as
+                    three essential objects such as the geothermal power plant module, the
+                    Monte Carlo simulation module, and the module of tools. For testing the
+                    application, a Jupyter Notebook example has been included in the test
+                    folder.
+contact:
+                    carlos.pocasangre@mine.kyushu-u.ac.jp
 """
 
 
@@ -13,7 +54,7 @@ from time import clock
 import scipy.stats as ss
 from beautifultable import BeautifulTable
 
-__version_info__ = (2018, 2, 1, 0, 9, 'dev1')
+__version_info__ = (2018, 2, 1, 0, 13, 'dev1')
 __version__ = '.'.join(map(str, __version_info__))
 __author__ = 'Carlos O. POCASANGRE JIMENEZ'
 __description__ = 'Geothermal Power Potential assessment'
@@ -21,6 +62,7 @@ __url__ = 'https://github.com/cpocasangre/gppeval'
 __module_name__ = 'gppeval'
 __author_email__ = 'carlos.pocasangre@mine.kyushu-u.ac.jp'
 __license__ = 'MIT License'
+__status__ = 'Development release'
 
 
 class Reservoir(object):
