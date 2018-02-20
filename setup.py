@@ -27,8 +27,12 @@ setup(
         'volumetric method',
         'heat in place',
         'geothermal reservoir'],
-    # install_requires=['numpy', 'scipy', 'matplotlib', 'mcerp', 'beautifultable'],
+    install_requires=['numpy', 'scipy', 'matplotlib', 'mcerp', 'beautifultable'],
     classifiers=['Development Status :: 2 - Pre-Alpha',
                  'License :: OSI Approved :: MIT License',
                  'Programming Language :: Python :: 2.7'],
-    zip_safe=False)
+    zip_safe=False,
+    package_data={
+        'gppeval': ['example/example.ipynb', 'example/reservoir_properties_list.csv'],
+    },
+)

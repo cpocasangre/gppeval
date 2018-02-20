@@ -18,8 +18,8 @@ The Geothermal Power Potential Evaluation stochastic library, Gppeval, is struct
 as three essential objects such as the geothermal power plant module, the Monte
 Carlo simulation module, and the module of tools.
 
-For testing the application, a **Jupyter Notebook** example has been included in the test
-folder.
+For testing the application, a **Jupyter Notebook** example has been included in the `example
+folder`_.
 
 *HINT*: **For the moment, this application is available only for Python 2.7**
 
@@ -54,15 +54,11 @@ package (administrative privileges may be required). Keep in mind to use Python 
 
        $ [sudo] python setup.py install
 
-   b. If 'pip' is installed, run the command in the same folder 'gppeval':
-
-       $ [sudo] pip install [--upgrade] .
-
-   c. If 'pip' is installed, run the follow command (stable version and internet connection is required)
+   b. If 'pip' is installed, run the follow command (stable version and internet connection is required)
 
        $ [sudo] pip install [--upgrade] gppeval
 
-   d. If 'pip' is installed, run the follow command (developing version and internet connection is required):
+   c. If 'pip' is installed, run the follow command (developing version and internet connection is required):
 
        $ [sudo] pip install [--upgrade] [--index-url https://test.pypi.org/simple/] gppeval
 
@@ -84,4 +80,5 @@ Please send **feature requests, bug reports, or feedback** to: `Carlos O. POCASA
 .. _Mcerp: http://github.com/tisimst/mcerp
 .. _Beautifultable: https://github.com/pri22296/beautifultable
 .. _Gppeval: http://github.com/cpocasangre/gppeval
+.. _example folder: https://github.com/cpocasangre/gppeval
 .. _Carlos O. POCASANGRE JIMENEZ: mailto:carlos.pocasangre@mine.kyushu-u.ac.jp
