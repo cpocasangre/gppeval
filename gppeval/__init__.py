@@ -2,30 +2,24 @@
 """
 Title:
                     gppeval (geothermal power potential evaluation)
-
 Description:
                     A Python stochastic library for assessing geothermal power potential by
                     using the volumetric method in a liquid-dominated reservoir.
-
 Author:
                     Carlos O. Pocasangre Jimenez
-
+Supervisor:
+                    Yasuhiro Fujimitsu
 Organization:
-                    Department of Earth Resources Engineering, Graduate School of Engineering,
-                    Kyushu University. 744 Motooka, Nishi-ku, Fukuoka 819-0395, Japan
-
+                    Department of Earth Resources Engineering, Kyushu University.
+                    744 Motooka, Nishi-ku, Fukuoka 819-0395, Japan
 Date:
                     Created on Mon Dec 12th 2017
-
 Last modification:
-                    Tue Feb 20th 2018
-
+                    Fri Apr 6th 2018
 Version:
-                    2018.2.1.0.13.dev1
-
+                    2018.4.6.0.1.dev1
 Python_version:
                     2.7
-
 Abstract:
                     Gppeval is a Python stochastic library for assessing geothermal power
                     potential by using the volumetric method in a liquid dominated reservoir is
@@ -54,7 +48,7 @@ from time import clock
 import scipy.stats as ss
 from beautifultable import BeautifulTable
 
-__version_info__ = (2018, 2, 1, 0, 13, 'dev1')
+__version_info__ = (2018, 4, 6, 0, 1, 'dev1')
 __version__ = '.'.join(map(str, __version_info__))
 __author__ = 'Carlos O. POCASANGRE JIMENEZ'
 __description__ = 'Geothermal Power Potential assessment'
@@ -67,13 +61,16 @@ __status__ = 'Development release'
 
 class Reservoir(object):
     """
-    Reservoir abstraction
+    **Reservoir abstraction**
 
-        -address: string
-        -name: proper name
-        -location: dictionary with coordinates of center point in degree
-        -area: reservoir geometric surface area [km2]
-        -thickness: reservoir thickness [m]
+    usage:
+        reservoir_instance = gppeval.Reservoir()
+
+    :param name: name of the reservoir
+    :param location: dictionary with coordinates of center point in degree
+    :param address: address of reservoir
+    :param area: reservoir geometric surface area [km2]
+    :param thickness: reservoir thickness [m]
     """
     def __init__(self, **kwargs):
         self.name = 'Default name'
@@ -88,44 +85,91 @@ class Reservoir(object):
         super(Reservoir, self).__init__()
 
     def get_name(self):
-        """Get name: string"""
+        """
+        Get name
+
+        usage:
+            string = get_name()
+
+        :return name: name of the reservoir (string)
+        """
         return self.name
 
     def get_location(self):
-        """get location dictionary: latitude and longitude"""
+        """
+        Get location dictionary, latitude and longitude
+
+        usage:
+            dictionary = get_location()
+
+        :return location: a dictionary with latitude and longitude
+        """
         return self.location
 
     def get_address(self):
-        """get address: string"""
+        """
+        Get address
+
+        usage:
+            string = get_address()
+
+        :return address: address (string)
+        """
         return self.address
 
     def get_area(self):
-        """get area [km2] dictionary"""
+        """
+        Get area dictionary with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_area()
+
+        :return area: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.area
 
     def get_thickness(self):
-        """get thickness [m] dictionary"""
+        """
+        Get thickness dictionary with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_thickness()
+
+        :return thickness: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.thickness
 
     def set_name(self, name='string'):
-        """set name as string"""
+        """
+        Set name as string
+
+        usage:
+            set_name('name_of_instance')
+        """
         self.name = name
 
     def set_location(self, **kwargs):
         """
-        set location values (lat, lon)
-        set_location(lat=10.0, lon=20.0)
+        Set location values (lat, lon)
+
+        usage:
+            set_location(lat=10.0, lon=20.0)
         """
         self.set_values_to_variables(self.location, kwargs)
 
     def set_address(self, address='string'):
-        """set address as string"""
+        """
+        Set address as string
+
+        usage:
+            set_address(address='string')
+        """
         self.address = address
 
     @staticmethod
     def set_values_to_variables(var, values):
         """
-        helping function for giving values
+        helping function for giving values to variables which accept kwargs
 
         :param var: variable to change dictionary
         :param values: dictionary with variable values
@@ -137,19 +181,25 @@ class Reservoir(object):
     def set_area(self, **kwargs):
         """
         Set area values [km2], use the follow syntax:
-        set_area(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+
+        usage:
+            set_area(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.area, kwargs)
 
     def set_thickness(self, **kwargs):
         """
         Set thickness values [m], use the follow syntax:
-        set_thickness(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+
+        usage:
+            set_thickness(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.thickness, kwargs)
 
     def __str__(self):
-        """print name, location, address, area, thickness, and volume"""
+        """
+        Print name, location, address, area, thickness, and volume
+        """
         volume = self.area['most_likely'] * self.thickness['most_likely']
         return '{0}, Lat: {1} Lon: {2}, {3}, and {4} km2 '.format(self.name,
                                                                   str(self.location['lat']),
@@ -159,19 +209,20 @@ class Reservoir(object):
 
 class Thermodynamic(Reservoir):
     """
-    Thermodynamics properties
-        -name: string
-        -location: dictionary lat and lon
-        -address: string
-        -area: km2
-        -thickness: m
-        -reservoir_temp: oC
-        -abandon_temp: oC
-        -porosity: %
-        -rock_specific_heat: kJ/kg oC
-        -fluid_specific_heat: kJ/kg oC
-        -rock_density: kg/m3
-        -fluid_density: kg/m3
+    **Thermodynamics properties abstraction**
+
+    :param name: string
+    :param location: dictionary lat and lon
+    :param address: string
+    :param area: km^2
+    :param thickness: m
+    :param reservoir_temp: ºC
+    :param abandon_temp: ºC
+    :param porosity: %
+    :param rock_specific_heat: kJ/kg-ºC
+    :param fluid_specific_heat: kJ/kg-ºC
+    :param rock_density: kg/m3
+    :param fluid_density: kg/m3
     """
     def __init__(self, **kwargs):
         self.reservoir_temp = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
@@ -193,87 +244,152 @@ class Thermodynamic(Reservoir):
         super(Thermodynamic, self).__init__(**kwargs)
 
     def get_reservoir_temp(self):
-        """To get reservoir_temp [oC] dictionary"""
+        """
+        To get reservoir_temp dictionary in [ºC] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_reservoir_temp()
+
+        :return reservoir_temp: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.reservoir_temp
 
     def get_abandon_temp(self):
-        """To get abandon_temp [oC] dictionary"""
+        """
+        To get abandon_temp dictionary in [ºC] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_abandon_temp()
+
+        :return abandon_temp: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.abandon_temp
 
     def get_porosity(self):
-        """To get porosity [%] dictionary"""
+        """
+        To get porosity dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_porosity()
+
+        :return porosity: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.porosity
 
     def get_rock_specific_heat(self):
-        """To get rock_specific_heat [kJ/kg oC] dictionary"""
+        """
+        To get rock_specific_heat dictionary in [kJ/kg-ºC] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_rock_specific_heat()
+
+        :return rock_specific_heat: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.rock_specific_heat
 
     def get_rock_density(self):
-        """To get rock_density [kg/m3] dictionary"""
+        """
+        To get rock_density dictionary in [kg/m^3] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_rock_density()
+
+        :return rock_density: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.rock_density
 
     def get_fluid_specific_heat(self):
-        """To get fluid_specific_heat [kJ/kg oC] dictionary"""
+        """
+        To get fluid_specific_heat dictionary in [kJ/kg-ºC] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_fluid_specific_heat()
+
+        :return fluid_specific_heat: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.fluid_specific_heat
 
     def get_fluid_density(self):
-        """To get fluid_density [kg/m3] dictionary"""
+        """
+        To get fluid_density dictionary in [kg/m^3] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_fluid_density()
+
+        :return fluid_density: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.fluid_density
 
     def set_reservoir_temp(self, **kwargs):
         """
-        Set reservoir_temp values [oC], use the follow syntax:
-        set_reservoir_temp(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        Set reservoir_temp values [ºC], use the follow syntax:
+
+        usage:
+            set_reservoir_temp(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.reservoir_temp, kwargs)
 
     def set_abandon_temp(self, **kwargs):
         """
-        Set abandon_temp values [oC], use the follow syntax:
-        set_abandon_temp(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        Set abandon_temp values [ºC], use the follow syntax:
+
+        usage:
+            set_abandon_temp(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.abandon_temp, kwargs)
 
     def set_porosity(self, **kwargs):
         """
         Set porosity values [%], use the follow syntax:
-        set_porosity(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+
+        usage:
+            set_porosity(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.porosity, kwargs)
 
     def set_rock_specific_heat(self, **kwargs):
         """
-        Set rock_specific_heat values [kJ/kg oC], use the follow syntax:
-        set_rock_specific_heat(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0,
+        Set rock_specific_heat values [kJ/kg-ºC], use the follow syntax:
+
+        usage:
+            set_rock_specific_heat(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0,
                                pdf='C')
         """
         self.set_values_to_variables(self.rock_specific_heat, kwargs)
 
     def set_rock_density(self, **kwargs):
         """
-        Set rock_density values [kg/m3], use the follow syntax:
-        set_rock_density(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        Set rock_density values [kg/m^3], use the follow syntax:
+
+        usage:
+            set_rock_density(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.rock_density, kwargs)
 
     def set_fluid_specific_heat(self, **kwargs):
         """
-        Set fluid_specific_heat values [kJ/kg oC], use the follow syntax:
-        set_fluid_specific_heat(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0,
+        Set fluid_specific_heat values [kJ/kg-ºC], use the follow syntax:
+
+        usage:
+            set_fluid_specific_heat(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0,
                                 pdf='C')
         """
         self.set_values_to_variables(self.fluid_specific_heat, kwargs)
 
     def set_fluid_density(self, **kwargs):
         """
-        Set fluid_density values [kg/m3], use the follow syntax:
-        set_fluid_density(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        Set fluid_density values [kg/m^3], use the follow syntax:
+
+        usage:
+            set_fluid_density(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.fluid_density, kwargs)
 
     @staticmethod
     def liquid_dominant_volumetric_energy(a, h, tr, ta, phi, cr, cf, rho_r, rho_f):
-        """calculate energy available [kJ]"""
+        """
+        To calculate energy available in the reservoir by volumetric method in liquid dominated [kJ]
+        """
         q = (rho_r * cr * (1.0 - phi) + rho_f * cf * phi) * (a * 1.0e6) * h * (tr - ta)
         return q
 
@@ -281,6 +397,7 @@ class Thermodynamic(Reservoir):
     def two_phase_dominant_volumetric_energy(a, h, tr, ta, phi, cr, cf, rho_r, rho_f):
         """
         calculate energy available [kJ]
+
         HINT: This method has not been implemented yet. It uses the same equation as LQDE
         method (Liquid dominated volumetric energy) has.
         """
@@ -290,45 +407,36 @@ class Thermodynamic(Reservoir):
 
 class GeothermalPowerPlant(Thermodynamic):
     """
-    Class for calculating power assessment of geothermal field
+    **Class for calculating power assessment of geothermal field**
 
     General variables:
-        -name: string
-        -location: dictionary lat and lon
-        -address: string
-        -area: km2
-        -thickness: m
+        :param name: string
+        :param location: dictionary lat and lon
+        :param address: string
+        :param area: km^2
+        :param thickness: m
 
     Thermodynamics properties:
-        -reservoir_temp: oC
-        -abandon_temp: oC
-        -porosity: %
-        -rock_specific_heat: kJ/kg oC
-        -fluid_specific_heat: kJ/kg oC
-        -rock_density: kg/m3
-        -fluid_density: kg/m3
+        :param reservoir_temp: ºC
+        :param abandon_temp: ºC
+        :param porosity: %
+        :param rock_specific_heat: kJ/kg-ºC
+        :param fluid_specific_heat: kJ/kg-ºC
+        :param rock_density: kg/m^3
+        :param fluid_density: kg/m^3
 
     Power Plant characteristics:
-        -recovery_factor: heat recovery factor from heat source to power plant
-        -conversion_efficiency: efficiency of electrical conversion
-        -plant_net_capacity_factor: plant net capacity factor
-        -lifespan: lifespan years
+        :param recovery_factor: heat recovery factor from heat source to power plant
+        :param conversion_efficiency: efficiency of electrical conversion
+        :param plant_net_capacity_factor: plant net capacity factor
+        :param lifespan: lifespan years
 
     HINT: variable power_potential has Monte Carlo simulation results:
     percentiles list has values from 5% to 95%
-    self.power_potential = {'base': 1.0,
-                                'pdf': 1.0,
-                                'iterations': 10000,
-                                'statistics': {'p_base': 1.0,
-                                               'mean': 1.0,
-                                               'sd': 1.0,
-                                               'skew': 1.0,
-                                               'kurt': 1.0,
-                                               'min': 1.0,
-                                               'max': 1.0,
-                                               'percentiles': []
-                                               }
-                            }
+
+    self.power_potential = {'base': 1.0, 'pdf': 1.0, 'iterations': 10000, 'statistics': \
+    {'p_base': 1.0, 'mean': 1.0, 'sd': 1.0, 'skew': 1.0, 'kurt': 1.0, 'min': 1.0, 'max': 1.0, \
+    'percentiles': []}}
     """
     def __init__(self, **kwargs):
         self.conversion_efficiency = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0,
@@ -355,68 +463,103 @@ class GeothermalPowerPlant(Thermodynamic):
         super(GeothermalPowerPlant, self).__init__(**kwargs)
 
     def get_conversion_efficiency(self):
-        """To get conversion_efficiency [%] dictionary"""
+        """
+        To get conversion_efficiency dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_conversion_efficiency()
+
+        :return conversion_efficiency: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.conversion_efficiency
 
     def get_recovery_factor(self):
-        """To get recovery_factor [%] dictionary"""
+        """
+        To get recovery_factor dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_recovery_factor()
+
+        :return recovery_factor: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.recovery_factor
 
     def get_plant_net_capacity_factor(self):
-        """To get plant_net_capacity_factor [%] dictionary"""
+        """
+        To get plant_net_capacity_factor dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_plant_net_capacity_factor()
+
+        :return plant_net_capacity_factor: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.plant_net_capacity_factor
 
     def get_lifespan(self):
-        """To get lifespan [years] dictionary"""
+        """
+        To get lifespan dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_lifespan()
+
+        :return lifespan: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
         return self.lifespan
 
     def set_conversion_efficiency(self, **kwargs):
         """
         Set conversion_efficiency values [%], use the follow syntax:
-        set_conversion_efficiency(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0,
-                                  pdf='C')
+
+        usage:
+            set_conversion_efficiency(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.conversion_efficiency, kwargs)
 
     def set_recovery_factor(self, **kwargs):
         """
         Set recovery_factor values [%], use the follow syntax:
-        set_recovery_factor(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+
+        usage:
+            set_recovery_factor(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.recovery_factor, kwargs)
 
     def set_plant_net_capacity_factor(self, **kwargs):
         """
         Set plant_net_capacity_factor values [%], use the follow syntax:
-        set_plant_net_capacity_factor(min=10.0, most_likely=20.0, max=30.0, mean=40.0,
-                                      sd=50.0, pdf='C')
+
+        usage:
+            set_plant_net_capacity_factor(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.plant_net_capacity_factor, kwargs)
 
     def set_lifespan(self, **kwargs):
         """
         Set lifespan values [years], use the follow syntax:
-        set_lifespan(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+
+        usage:
+            set_lifespan(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
         """
         self.set_values_to_variables(self.lifespan, kwargs)
 
     def power_energy(self, a, h, tr, ta, phi, cr, cf, rho_r, rho_f, rf, ce, pf, t, rtype='ld'):
         """
-        return power energy assessment [We]
+        **return power energy assessment [We]**
+
         :param t: lifespan [years]
         :param pf: plant net capacity factor [%]
         :param ce: conversion efficiency [%]
         :param rf: recovery factor [%]
-        :param rho_f: rock density [kg/m3]
-        :param rho_r: fluid density [kg/m3]
-        :param cf: fluid specific heat [kJ/kg oC]
-        :param cr: rock specific heat [kJ/kg oC]
+        :param rho_f: rock density [kg/m^3]
+        :param rho_r: fluid density [kg/m^3]
+        :param cf: fluid specific heat [kJ/kg-ºC]
+        :param cr: rock specific heat [kJ/kg-ºC]
         :param phi: porosity [%]
         :param h: thickness [m]
-        :param ta: abandon temperature [oC]
-        :param tr: reservoir temperature [oC]
-        :param a: area [km2]
-        :param rtype: ld= liquid dominant, tpd = two phase dominant
+        :param ta: abandon temperature [ºC]
+        :param tr: reservoir temperature [ºC]
+        :param a: area [km^2]
+        :param rtype: ld = liquid dominant, tpd = two phase dominant
         :return: power energy [We]
         """
         q = 1.0
@@ -428,7 +571,9 @@ class GeothermalPowerPlant(Thermodynamic):
         return (q * 1000) * rf * ce / (pf * (t * 31557600))
 
     def __str__(self):
-        """generate a table with all geothermal power plant"""
+        """
+        To generate a table with all geothermal power plant values
+        """
         if type(self.power_potential['pdf']) is mc.UncertainFunction:
             text = "Most Likely PowerGeneration: {0} [We]\n" \
                    "P10%: {1} [We]".format(self.power_potential['base'],
@@ -487,11 +632,21 @@ class MonteCarloSimulation(object):
             setattr(self, key, kwargs[key])
 
     def get_iterations(self):
-        """To get iterations value, int"""
+        """
+        To get iterations value
+
+        usage:
+            val = get_iterations()
+        """
         return self.iterations
 
     def set_iterations(self, iterations=10000):
-        """To set iterations value, int"""
+        """
+        To set iterations value
+
+        usage:
+            set_iterations(10000)
+        """
         self.iterations = iterations
 
     def probability_distribution_function(self, val, lognormal_adjust=False):
@@ -542,7 +697,8 @@ class MonteCarloSimulation(object):
         """
         Calculus of Power Energy Assessment
 
-        usage: gpp = sim.calc_energy_potential(gpp)
+        usage:
+            gpp = sim.calc_energy_potential(gpp)
 
         :param rtype: reservoir type
         :param gpp: Geothermal power Plant object
@@ -626,41 +782,81 @@ class Tools(object):
             setattr(self, key, kwargs[key])
 
     def get_num_figures(self):
-        """To get num_figures, int"""
+        """
+        To get num_figures
+
+        usage:
+            val = get_num_figures()
+        """
         return self.num_figures
 
     def get_num_figures_plot(self):
-        """To get num_figures_plot, int"""
+        """
+        To get num_figures_plot
+
+        usage:
+            val = get_num_figures_plot()
+        """
         return self.num_figures_plot
 
     def get_eng_format(self):
-        """To get eng_format, char"""
+        """
+        To get eng_format
+
+        usage:
+            val = get_eng_format()
+        """
         return self.eng_format
 
     def get_hist_bins(self):
-        """To get hist_bins, int"""
+        """
+        To get hist_bins
+
+        usage:
+            val = get_hist_bins()
+        """
         return self.hist_bins
 
     def set_num_figures(self, num_figures=6):
-        """To set num_figures, int"""
+        """
+        To set num_figures
+
+        usage:
+            set_num_figures(6)
+        """
         self.num_figures = num_figures
 
     def set_num_figures_plot(self, num_figures_plot=3):
-        """To set num_figures_plot, int"""
+        """
+        To set num_figures_plot
+
+        usage:
+            set_num_figures_plot(2)
+        """
         self.num_figures_plot = num_figures_plot
 
     def set_eng_format(self, eng_format='M'):
-        """To set eng_format, char"""
+        """
+        To set eng_format
+
+        usage:
+            set_eng_format('M')
+        """
         self.eng_format = eng_format
 
     def set_hist_bins(self, hist_bins=25):
-        """To set hist_bins, int"""
+        """
+        To set hist_bins
+
+        usage:
+            set_hist_bins(25)
+        """
         self.hist_bins = hist_bins
 
     @staticmethod
     def figures_to_present(value=1.0, figures=1):
         """
-        present the number by number of figures selected
+        present the number by number of figures selected.
         return string
         """
         fi = '%.' + str(figures) + 'g'
@@ -669,6 +865,7 @@ class Tools(object):
     def eng_fmt(self, value=1.0, option="1", *arg):
         """
         Present the data as Engineering format
+
         case1: eng_fmt(value=3538, option="k") -> return 3.538 float
         case2: eng_fmt(value=3538, option="k", 2) -> return 3.5 string
         """
@@ -730,7 +927,10 @@ class Tools(object):
     def read_file_csv(self, fn_input=None):
         """
         Read File coma separated value *.csv
-        usage: gpp = tools.read_file_csv()
+
+        usage: gpp = tools.read_file_csv('file_name')
+
+        :param fn_input: File name string
         :return gpp: Geothermal Power Plant object
         """
         if fn_input is not None:
@@ -792,7 +992,6 @@ class Tools(object):
     def write_file_cvs(self, gpp, fn_output=None):
         """
         Write File coma separated value *.csv
-        :return nothing
         """
         if fn_output is not None:
             self.fn_output = fn_output

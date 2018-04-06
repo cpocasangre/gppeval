@@ -58,15 +58,10 @@ package (administrative privileges may be required). Keep in mind to use Python 
 
        $ [sudo] pip install [--upgrade] gppeval
 
-   c. If 'pip' is installed, run the follow command (developing version and internet connection is required):
-
-       $ [sudo] pip install [--upgrade] [--index-url https://test.pypi.org/simple/] gppeval
-
 CONTACT
 =======
 
 Please send **feature requests, bug reports, or feedback** to: `Carlos O. POCASANGRE JIMENEZ`_
-
 
 .. _Monte Carlo methods: http://en.wikipedia.org/wiki/Monte_Carlo_method
 .. _latin-hypercube sampling: http://en.wikipedia.org/wiki/Latin_hypercube_sampling
