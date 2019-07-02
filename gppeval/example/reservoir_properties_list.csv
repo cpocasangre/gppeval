@@ -1,0 +1,16 @@
+#Imput file for the Assessment of Power Energy Generation by using Volumetric Method and Mote Carlo Probabilistic analysis,,,,,,,,,,,,
+#Item,Name_Place,Latitude,Longitude,Reservoir_Properties,Symbol,Units,Min,Most_Likely,Max,Mean,Standard_Deviation,Distribution_Type
+0,Nombre de Jesus. Chalatenango,14.00061,-88.73744,ReservoirArea,A,km2,5,6,7,0,0,T
+1,,,,Thickness,h,m,450,500,600,0,0,T
+2,,,,Volume,v,km3,4,6,8.2,0,0,none
+3,,,,ReservoirTemperature,Tr,oC,130,160,163,0,0,T
+4,,,,AbandonTemperature,Ta,oC,0,105.36,0,0,0,C
+5,,,,Porosity,Phi,%,0,0.06,0,0.06,0.02,L
+6,,,,RockSpecificHeat,Cr,kJ/kg-oC,0.85,0.85,0.9,0,0,T
+7,,,,WaterSpecificHeat ,Cf,kJ/kg-oC,0,5.18,0,0,0,C
+8,,,,RockDensity,rho_r,kg/m3,0,2500,0,0,0,C
+9,,,,WaterDensity,rho_f,kg/m3,0,764.45,0,0,0,C
+10,,,,RecoveryFactor,Rf,%,0.08,0.14,0.2,0,0,U
+11,,,,ConversionEfficiency,Ce,%,0,0.25,0,0,0,C
+12,,,,PowerFactor,Pf,%,0.9,0.95,1,0,0,T
+13,,,,LifeSpan,t,years,0,25,0,0,0,C
