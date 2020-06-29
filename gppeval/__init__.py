@@ -68,7 +68,7 @@ __author__ = 'Carlos O. POCASANGRE JIMENEZ'
 __description__ = 'Geothermal Power Potential assessment'
 __url__ = 'https://github.com/cpocasangre/gppeval'
 __module_name__ = 'gppeval'
-__author_email__ = 'carlos.pocasangre@mine.kyushu-u.ac.jp'
+__author_email__ = 'carlos.pocasangre@ues.edu.sv'
 __license__ = 'MIT License'
 __status__ = 'Development release'
 
