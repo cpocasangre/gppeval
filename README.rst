@@ -117,4 +117,4 @@ Please send **feature requests, bug reports, or feedback** to: `Carlos O. POCASA
 .. _Beautifultable: https://github.com/pri22296/beautifultable
 .. _Gppeval: http://github.com/cpocasangre/gppeval
 .. _example folder: https://github.com/cpocasangre/gppeval
-.. _Carlos O. POCASANGRE JIMENEZ: mailto:carlos.pocasangre@mine.kyushu-u.ac.jp
+.. _Carlos O. POCASANGRE JIMENEZ: mailto:carlos.pocasangre@ues.edu.sv
