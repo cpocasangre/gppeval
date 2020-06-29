@@ -42,7 +42,7 @@ Abstract:
                     Further investigations into the geothermal power potential will be
                     conducted to validate the new data.
 Contact:
-                    carlos.pocasangre@mine.kyushu-u.ac.jp
+                    carlos.pocasangre@ues.edu.sv
 
                     carlos.pocasangre@fia.ues.edu.sv
 Reference:
