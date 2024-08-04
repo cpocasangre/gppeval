@@ -6,7 +6,12 @@ Description:
                     A Python-based stochastic library for assessing geothermal power potential
                     using the volumetric method in a liquid-dominated reservoir.
 Author:
-                    Carlos O. Pocasangre Jimenez
+                    Carlos Pocasangre Jiménez
+
+                    Fidel Ernesto Cortez Torres
+
+                    Rubén Alexander Henríquez Miranda
+
 Supervisor:
                     Yasuhiro Fujimitsu
 Organization:
@@ -18,34 +23,39 @@ Organization:
 Date:
                     Created on Mon Dec 12th 2017
 Last modification:
-                    ( ... Wed Apr 17th 2019)
+                    ( ... Sun Aug 4st 2024)
 Version:
-                    2019.4.17.0.3.dev1
+                    2024.08.04.0.1.dev1
 Python_version:
-                    3.5
+                    3.10.12
 Abstract:
                     We present a Python-based stochastic library for assessing geothermal power
-                    potential using the volumetric method in a liquid-dominated reservoir.
+                    potential using the volumetric method in a liquid-dominated and two-phases
+                    reservoir.
                     The specific aims of this study are to use the volumetric method, “heat in
                     place,” to estimate electrical energy production ability from a geothermal
-                    liquid-dominated reservoir, and to build a Python-based stochastic library
-                    with useful methods for running such simulations. Although licensed
+                    liquid-dominated or two-phases reservoir, and to build a Python-based stochastic
+                    library with useful methods for running such simulations. Although licensed
                     software is available, we selected the open-source programming language
                     Python for this task. The Geothermal Power Potential Evaluation stochastic
                     library (gppeval) is structured as three essential objects including a
                     geothermal power plant module, a Monte Carlo simulation module, and a tools
-                    module. In this study, we use hot spring data from the municipality of
-                    Nombre de Jesus, El Salvador, to demonstrate how the gppeval can be used to
-                    assess geothermal power potential. Frequency distribution results from the
-                    stochastic simulation shows that this area could initially support a
-                    9.16-MWe power plant for 25 years, with a possible expansion to 17.1 MWe.
-                    Further investigations into the geothermal power potential will be
-                    conducted to validate the new data.
+                    module.
+
 Contact:
                     carlos.pocasangre@ues.edu.sv
 
-                    carlos.pocasangre@fia.ues.edu.sv
+                    carlos.pocasangre@ieee.org
+
+                    ernestocortez.sv@ieee.org
+
+                    rubenhenriquez@ieee.org
+
 Reference:
+                    J. Lawless. 2010. Geothermal Lexicon For Resources and Reserves Definition
+                    and Reporting. 2nd Edition (2010) Edition. Adelaide, Southern Australia:
+                    Australian Geothermal Reporting Code Committee (AGRCC)
+
                     Pocasangre, C., & Fujimitsu, Y. (2018). A Python-based stochastic library
                     for assessing geothermal power potential using the volumetric method in a
                     liquid-dominated reservoir. Geothermics, 76, 164–176
@@ -53,16 +63,16 @@ Reference:
                     https://doi.org/10.1016/J.GEOTHERMICS.2018.07.009
 """
 
-
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import mcerp as mc
 import numpy as np
-from time import clock
+from time import process_time
 import scipy.stats as ss
 from beautifultable import BeautifulTable
+from iapws import IAPWS95
 
-__version_info__ = (2019, 4, 17, 0, 3, 'dev1')
+__version_info__ = (2024, 8, 4, 0, 1, 'dev1')
 __version__ = '.'.join(map(str, __version_info__))
 __author__ = 'Carlos O. POCASANGRE JIMENEZ'
 __description__ = 'Geothermal Power Potential assessment'
@@ -86,7 +96,26 @@ class Reservoir(object):
     :param area: reservoir geometric surface area [km2]
     :param thickness: reservoir thickness [m]
     :param volume: volume [km3]
+
+    methods:
+    __init__
+    set_values_to_variables
+    get_name
+    get_location
+    get_address
+    get_area
+    get_thickness
+    get_volume
+
+    set_name
+    set_location
+    set_address
+    set_area
+    set_thickness
+    set_volume
+    _str__
     """
+
     def __init__(self, **kwargs):
         self.name = 'Default name'
         self.location = {'lat': 0.0, 'lon': 0.0}
@@ -100,7 +129,7 @@ class Reservoir(object):
         self.thickness = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
                           'sd': 1.0, 'pdf': None}
         self.volume = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
-                          'sd': 1.0, 'pdf': None}
+                       'sd': 1.0, 'pdf': None}
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
         super(Reservoir, self).__init__()
@@ -265,12 +294,15 @@ class Thermodynamic(Reservoir):
     """
     **Thermodynamics properties abstraction**
 
+    **Physical params (Reservoir Object)
     :param name: string
     :param location: dictionary lat and lon
     :param address: string
     :param area: km^2
     :param thickness: m
     :param volume: km3
+
+    **thermodynamic params
     :param reservoir_temp: ºC
     :param abandon_temp: ºC
     :param porosity: %
@@ -278,7 +310,47 @@ class Thermodynamic(Reservoir):
     :param fluid_specific_heat: kJ/kg-ºC
     :param rock_density: kg/m3
     :param fluid_density: kg/m3
+
+    :param reservoir_steam_density: kg/m3
+    :param reservoir_water_saturation: %
+    :param reservoir_steam_enthalpy: kJ/kg
+    :param reservoir_liquid_enthalpy: kJ/kg
+    :param abandon_liquid_enthalpy: kJ/kg
+
+    **methods
+    __init__
+    get_reservoir_temp
+    get_abandon_temp
+    get_porosity
+    get_rock_specific_heat
+    get_rock_density
+    get_fluid_specific_heat
+    get_fluid_density
+
+    get_reservoir_steam_density
+    get_reservoir_water_saturation
+    get_reservoir_steam_enthalpy
+    get_reservoir_liquid_enthalpy
+    get_abandon_liquid_enthalpy
+
+    set_reservoir_temp
+    set_abandon_temp
+    set_porosity
+    set_rock_specific_heat
+    set_rock_density
+    set_fluid_specific_heat
+    set_fluid_density
+
+    set_reservoir_steam_density
+    set_reservoir_water_saturation
+    set_reservoir_steam_enthalpy
+    set_reservoir_liquid_enthalpy
+    set_abandon_liquid_enthalpy
+
+    liquid_dominant_volumetric_energy
+    two_phase_dominant_volumetric_energy
     """
+
     def __init__(self, **kwargs):
         self.reservoir_temp = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
                                'sd': 1.0, 'pdf': 'C'}
@@ -294,6 +366,18 @@ class Thermodynamic(Reservoir):
                              'sd': 1.0, 'pdf': 'C'}
         self.fluid_density = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
                               'sd': 1.0, 'pdf': 'C'}
+        # ********* NEW *************
+        self.reservoir_steam_density = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
+                                        'sd': 1.0, 'pdf': 'C'}
+        self.reservoir_water_saturation = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
+                                           'sd': 1.0, 'pdf': 'C'}
+        self.reservoir_steam_enthalpy = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
+                                         'sd': 1.0, 'pdf': 'C'}
+        self.reservoir_liquid_enthalpy = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
+                                          'sd': 1.0, 'pdf': 'C'}
+        self.abandon_liquid_enthalpy = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0, 'mean': 1.0,
+                                        'sd': 1.0, 'pdf': 'C'}
+        # ********* FIN NEW **********
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
         super(Thermodynamic, self).__init__(**kwargs)
@@ -375,6 +459,63 @@ class Thermodynamic(Reservoir):
         """
         return self.fluid_density
 
+    # ********* NEW *********
+    def get_reservoir_steam_density(self):
+        """
+        To get_reservoir_steam_density dictionary in [kg/m^3] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_reservoir_steam_density()
+
+        :return reservoir_steam_density: a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
+        return self.reservoir_steam_density
+
+    def get_reservoir_water_saturation(self):
+        """
+        To get_reservoir_water_saturation dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_water_saturation()
+
+        :return : water_saturation a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
+        return self.reservoir_water_saturation
+
+    def get_reservoir_steam_enthalpy(self):
+        """
+        To get_reservoir_steam_enthalpy dictionary in [kJ/kg] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_reservoir_steam_enthalpy()
+
+        :return : reservoir_steam_enthalpy a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
+        return self.reservoir_steam_enthalpy
+
+    def get_reservoir_liquid_enthalpy(self):
+        """
+        To get_reservoir_liquid_enthalpy dictionary in [kJ/kg] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_reservoir_liquid_enthalpy()
+
+        :return : reservoir_liquid_enthalpy a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
+        return self.reservoir_liquid_enthalpy
+
+    def get_abandon_liquid_enthalpy(self):
+        """
+        To get_abandon_liquid_enthalpy dictionary in [kJ/kg] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            dictionary = get_abandon_liquid_enthalpy()
+
+        :return : abandon_liquid_enthalpy a dictionary with min, most_likely, max, mean, sd, pdf values
+        """
+        return self.abandon_liquid_enthalpy
+
+    # ********* FIN NEW *****
     def set_reservoir_temp(self, **kwargs):
         """
         Set reservoir_temp values [ºC], use the follow syntax:
@@ -440,11 +581,72 @@ class Thermodynamic(Reservoir):
         """
         self.set_values_to_variables(self.fluid_density, kwargs)
 
+    # ********* NEW *********
+    def set_reservoir_steam_density(self, **kwargs):
+        """
+        Set reservoir_steam_density dictionary in [kg/m^3] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            set_reservoir_steam_density(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        """
+        return self.set_values_to_variables(self.reservoir_steam_density, kwargs)
+
+    def set_reservoir_water_saturation(self, **kwargs):
+        """
+        set reservoir_water_saturation dictionary in [%] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            set_reservoir_water_saturation(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        """
+        return self.set_values_to_variables(self.reservoir_water_saturation, kwargs)
+
+    def set_reservoir_steam_enthalpy(self, **kwargs):
+        """
+        Set reservoir_steam_enthalpy dictionary in [kJ/kg] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            set_reservoir_steam_enthalpy(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+
+        """
+        return self.set_values_to_variables(self.reservoir_steam_enthalpy, kwargs)
+
+    def set_reservoir_liquid_enthalpy(self, **kwargs):
+        """
+        Set reservoir_liquid_enthalpy dictionary in [kJ/kg] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            set_reservoir_liquid_enthalpy(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        """
+        return self.set_values_to_variables(self.reservoir_liquid_enthalpy, kwargs)
+
+    def set_abandon_liquid_enthalpy(self, **kwargs):
+        """
+        Set abandon_liquid_enthalpy dictionary in [kJ/kg] with min, most_likely, max, mean, sd, pdf values
+
+        usage:
+            set__abandon_liquid_enthalpy(min=10.0, most_likely=20.0, max=30.0, mean=40.0, sd=50.0, pdf='C')
+        """
+        return self.set_values_to_variables(self.abandon_liquid_enthalpy, kwargs)
+
+    # ********* FIN NEW *****
+
     @staticmethod
     def liquid_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r, rho_f, a=None, h=None, v=None):
         """
         To calculate energy available in the reservoir by volumetric method in liquid dominated [kJ]
+
+        :param v: volume
+        :param h: thickness
+        :param a: area
+        :param rho_f: fluid density
+        :param rho_r: rock density
+        :param cf: fluid-specific heat
+        :param cr: rock-specific heat
+        :param phi: porosity
+        :param ta: abandon temperature
+        :param tr : reservoir temperature
         """
+        print('Function LD')
         q = 1.0
         if v is not None:
             q = (rho_r * cr * (1.0 - phi) + rho_f * cf * phi) * (v * 1.0e9) * (tr - ta)
@@ -453,18 +655,42 @@ class Thermodynamic(Reservoir):
         return q
 
     @staticmethod
-    def two_phase_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r, rho_f, a, h, v):
+    def two_phase_dominant_volumetric_energy(tr, ta, phi, cr, rho_r, rho_f, rho_si, sw, h_si, h_li, h_lf,
+                                             a=None, h=None, v=None):
         """
-        calculate energy available [kJ]
+        Calculate energy available [kJ]
+
+        :param h_lf: reservoir-abandon enthalpy
+        :param h_li: reservoir-fluid enthalpy
+        :param h_si: reservoir-steam enthalpy
+        :param sw: reservoir-water saturation
+        :param rho_si: reservoir-steam density
+        :param v: volume
+        :param h: thickness
+        :param a: area
+        :param rho_f: fluid density
+        :param rho_r: rock density
+        :param cr: rock-specific heat
+        :param phi: porosity
+        :param ta: abandon temperature
+        :param tr : reservoir temperature
 
         HINT: This method has not been implemented yet. It uses the same equation as LQDE
         method (Liquid dominated volumetric energy) has.
         """
-        q = 1.0
+        print('function TPD')
+        # q = 1.0
+
+        qr = rho_r * cr * (1.0 - phi) * (tr - ta)
+        qs = rho_si * phi * (1.0 - sw) * (h_si - h_li)
+        qw = rho_f * phi * sw * (h_li - h_lf)
+
+        q = qr + qs + qw
+
         if v is not None:
-            q = (rho_r * cr * (1.0 - phi) + rho_f * cf * phi) * (v * 1.0e9) * (tr - ta)
+            q = q * (v * 1.0e9)
         elif a is not None and h is not None:
-            q = (rho_r * cr * (1.0 - phi) + rho_f * cf * phi) * (a * 1.0e6) * h * (tr - ta)
+            q = q * (a * 1.0e6) * h
         return q
 
 
@@ -489,6 +715,12 @@ class GeothermalPowerPlant(Thermodynamic):
         :param rock_density: kg/m^3
         :param fluid_density: kg/m^3
 
+        :param reservoir_steam_density: kg/m3
+        :param reservoir_water_saturation: %
+        :param reservoir_steam_enthalpy: kJ/kg
+        :param reservoir_liquid_enthalpy: kJ/kg
+        :param abandon_liquid_enthalpy: kJ/kg
+
     Power Plant characteristics:
         :param recovery_factor: heat recovery factor from heat source to power plant
         :param conversion_efficiency: efficiency of electrical conversion
@@ -501,7 +733,21 @@ class GeothermalPowerPlant(Thermodynamic):
     self.power_potential = {'base': 1.0, 'pdf': 1.0, 'iterations': 10000, 'statistics': \
     {'p_base': 1.0, 'mean': 1.0, 'sd': 1.0, 'skew': 1.0, 'kurt': 1.0, 'min': 1.0, 'max': 1.0, \
     'percentiles': []}}
+
+    **methods
+    __init__
+    get_conversion_efficiency
+    get_recovery_factor
+    get_plant_net_capacity_factor
+    get_lifespan
+
+    set_conversion_efficiency
+    set_recovery_factor
+    set_plant_net_capacity_factor
+    set_lifespan
+    power_energy
     """
+
     def __init__(self, **kwargs):
         self.conversion_efficiency = {'min': 1.0, 'most_likely': 1.0, 'max': 1.0,
                                       'mean': 1.0, 'sd': 1.0, 'pdf': 'C'}
@@ -606,9 +852,16 @@ class GeothermalPowerPlant(Thermodynamic):
         """
         self.set_values_to_variables(self.lifespan, kwargs)
 
-    def power_energy(self, tr, ta, phi, cr, cf, rho_r, rho_f, rf, ce, pf, t, a, h, v, rtype='ld'):
+    def power_energy(self, tr, ta, phi, cr, cf, rho_r, rho_f, rf, ce, pf, t, a, h, v,
+                     rho_si, sw, h_si, h_li, h_lf, rtype='ld'):
         """
         **return power energy assessment [We]**
+
+        :param h_lf: reservoir-abandon enthalpy
+        :param h_li: reservoir-fluid enthalpy
+        :param h_si: reservoir-steam enthalpy
+        :param sw: reservoir-water saturation
+        :param rho_si: reservoir-steam density
 
         :param t: lifespan [years]
         :param pf: plant net capacity factor [%]
@@ -624,29 +877,38 @@ class GeothermalPowerPlant(Thermodynamic):
         :param tr: reservoir temperature [ºC]
         :param a: area [km^2]
         :param v: volume [km^3]
+
         :param rtype: ld = liquid dominant, tpd = two phase dominant
         :return: power energy [We]
         """
         q = 1.0
         if v is not None:
             if rtype == 'ld':
+                print('LD selected')
                 a = None
                 h = None
-                q = self.liquid_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r,
-                                                           rho_f, a, h, v)
+                q = self.liquid_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r, rho_f, a, h, v)
             elif rtype == 'tpd':
+                print('TPD selected')
                 a = None
                 h = None
-                q = self.two_phase_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r,
-                                                              rho_f, a, h, v)
+                # q = self.two_phase_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r,
+                #                                               rho_f, a, h, v)
+                q = self.two_phase_dominant_volumetric_energy(tr, ta, phi, cr, rho_r, rho_f, rho_si, sw,
+                                                              h_si, h_li, h_lf, a, h, v)
         else:
             if rtype == 'ld':
+                print('LD selected')
                 v = None
                 q = self.liquid_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r, rho_f, a, h, v)
             elif rtype == 'tpd':
+                print('TPD selected')
                 v = None
-                q = self.two_phase_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r,
-                                                              rho_f, a, h, v)
+                # q = self.two_phase_dominant_volumetric_energy(tr, ta, phi, cr, cf, rho_r,
+                #                                               rho_f, a, h, v)
+                q = self.two_phase_dominant_volumetric_energy(tr, ta, phi, cr, rho_r, rho_f, rho_si, sw,
+                                                              h_si, h_li, h_lf, a, h, v)
+
         return (q * 1000) * rf * ce / (pf * (t * 31557600))
 
     def __str__(self):
@@ -665,47 +927,69 @@ class GeothermalPowerPlant(Thermodynamic):
             keys = ['min', 'most_likely', 'max', 'mean', 'sd', 'pdf']
             return [val[keys[i]] for i in [0, 1, 2, 3, 4, 5]]
 
-        table1 = BeautifulTable(max_width=80)
-        table1.column_headers = ["name", "lat [oC]", "lon [oC]"]
-        table1.append_row([self.name, self.location['lat'], self.location['lon']])
-        table2 = BeautifulTable(max_width=110)
-        table2.top_border_char = '='
-        table2.header_separator_char = '='
-        table2.bottom_border_char = '='
-        table2.column_headers = ['Item', 'Variable', 'Symbol', 'Units', 'Min', 'Most_Likely',
+        table1 = BeautifulTable(maxwidth=80)
+        table1.columns.header = ["name", "lat [oC]", "lon [oC]"]
+        table1.rows.append([self.name, self.location['lat'], self.location['lon']])
+        table2 = BeautifulTable(maxwidth=120)
+        table2.border.top = '='
+        table2.columns.header.separator = '='
+        table2.border.bottom = '='
+        table2.columns.header = ['Item', 'Variable', 'Symbol', 'Units', 'Min', 'Most_Likely',
                                  'Max', 'Mean', 'SD', 'PDF']
-        table2.append_row([0, 'area', 'A', 'km2'] + get_values_ordered(self.area))
-        table2.append_row([1, 'thickness', 'h', 'm'] + get_values_ordered(self.thickness))
+        table2.rows.append([0, 'area', 'A', 'km2'] + get_values_ordered(self.area))
+        table2.rows.append([1, 'thickness', 'h', 'm'] + get_values_ordered(self.thickness))
 
-        table2.append_row([2, 'volume', 'v', 'km3'] + get_values_ordered(self.volume))
+        table2.rows.append([2, 'volume', 'v', 'km3'] + get_values_ordered(self.volume))
 
-        table2.append_row([3, 'reservoir_temp', 'Tr', 'oC'] +
-                          get_values_ordered(self.reservoir_temp))
-        table2.append_row([4, 'abandon_temp', 'Ta', 'oC'] +
-                          get_values_ordered(self.abandon_temp))
-        table2.append_row([5, 'porosity', 'phi', '%'] + get_values_ordered(self.porosity))
-        table2.append_row([6, 'rock_specific_heat', 'Cr', 'kJ/kg-oC'] +
-                          get_values_ordered(self.rock_specific_heat))
-        table2.append_row([7, 'fluid_specific_heat', 'Cf', 'kJ/kg-oC'] +
-                          get_values_ordered(self.fluid_specific_heat))
-        table2.append_row([8, 'rock_density', 'rho_r', 'kg/m3'] +
-                          get_values_ordered(self.rock_density))
-        table2.append_row([9, 'fluid_density', 'rho_f', 'kg/m3'] +
-                          get_values_ordered(self.fluid_density))
-        table2.append_row([10, 'recovery_factor', 'RF', '%'] +
-                          get_values_ordered(self.recovery_factor))
-        table2.append_row([11, 'conversion_efficiency', 'Ce', '%'] +
-                          get_values_ordered(self.conversion_efficiency))
-        table2.append_row([12, 'plant_net_capacity_factor', 'Pf', '%'] +
-                          get_values_ordered(self.plant_net_capacity_factor))
-        table2.append_row([13, 'lifespan', 't', 'years'] + get_values_ordered(self.lifespan))
-        return table1.get_string() + '\n' + table2.get_string() + '\n' + text
+        table2.rows.append([3, 'reservoir_temp', 'Tr', 'oC'] +
+                           get_values_ordered(self.reservoir_temp))
+        table2.rows.append([4, 'abandon_temp', 'Ta', 'oC'] +
+                           get_values_ordered(self.abandon_temp))
+        table2.rows.append([5, 'porosity', 'phi', '%'] + get_values_ordered(self.porosity))
+        table2.rows.append([6, 'rock_specific_heat', 'Cr', 'kJ/kg-oC'] +
+                           get_values_ordered(self.rock_specific_heat))
+        table2.rows.append([7, 'fluid_specific_heat', 'Cf', 'kJ/kg-oC'] +
+                           get_values_ordered(self.fluid_specific_heat))
+        table2.rows.append([8, 'rock_density', 'rho_r', 'kg/m3'] +
+                           get_values_ordered(self.rock_density))
+        table2.rows.append([9, 'fluid_density', 'rho_f', 'kg/m3'] +
+                           get_values_ordered(self.fluid_density))
+        # ****** NEW *****
+        table2.rows.append([10, 'reservoir_steam_density', 'rho_si', 'kg/m3'] +
+                           get_values_ordered(self.reservoir_steam_density))
+        table2.rows.append([11, 'Water Saturation', 'Sw', '%'] +
+                           get_values_ordered(self.reservoir_water_saturation))
+        table2.rows.append([12, 'reservoir_steam_enthalpy', 'h_si', 'kJ/kg'] +
+                           get_values_ordered(self.reservoir_steam_enthalpy))
+        table2.rows.append([13, 'reservoir_liquid_enthalpy', 'h_li', 'kJ/kg'] +
+                           get_values_ordered(self.reservoir_liquid_enthalpy))
+        table2.rows.append([14, 'abandon_liquid_enthalpy', 'h_lf', 'kJ/kg'] +
+                           get_values_ordered(self.abandon_liquid_enthalpy))
+        # ****** FIN NEW ****
+        table2.rows.append([15, 'recovery_factor', 'RF', '%'] +
+                           get_values_ordered(self.recovery_factor))
+        table2.rows.append([16, 'conversion_efficiency', 'Ce', '%'] +
+                           get_values_ordered(self.conversion_efficiency))
+        table2.rows.append([17, 'plant_net_capacity_factor', 'Pf', '%'] +
+                           get_values_ordered(self.plant_net_capacity_factor))
+        table2.rows.append([18, 'lifespan', 't', 'years'] + get_values_ordered(self.lifespan))
+        # return table1.get_string() + '\n' + table2.get_string() + '\n' + text
+        return str(table1) + '\n' + str(table2) + '\n' + text
 
 
 class MonteCarloSimulation(object):
     """
     Run Monte Carlo Simulation for figuring out Geothermal Power Energy
+
+    **methods
+    __init__
+    get_iterations
+    set_iterations
+    probability_distribution_function
+    calc_energy_potential
+    __str__
     """
+
     def __init__(self, **kwargs):
         self.iterations = 10000
         self.calc_time = 0.0
@@ -782,12 +1066,14 @@ class MonteCarloSimulation(object):
         usage:
             gpp = sim.calc_energy_potential(gpp)
 
-        :param rtype: reservoir type
+        :param rtype: reservoir type 'ld' (liquid-dominant) 'tpd' (two-phases dominant)
         :param gpp: Geothermal power Plant object
         :return: a Geothermal power plant object
         """
-        start = clock()
+        # start = clock()
+        start = process_time()
         if type(gpp) is GeothermalPowerPlant:
+            # **** CALCULUS OF MOST LIKELY POWER POTENTIAL *****
             tr = gpp.reservoir_temp['most_likely']
             ta = gpp.abandon_temp['most_likely']
             phi = gpp.porosity['most_likely']
@@ -800,20 +1086,29 @@ class MonteCarloSimulation(object):
             pf = gpp.plant_net_capacity_factor['most_likely']
             t = gpp.lifespan['most_likely']
 
+            rho_si = gpp.reservoir_steam_density['most_likely']
+            sw = gpp.reservoir_water_saturation['most_likely']
+            h_si = gpp.reservoir_steam_enthalpy['most_likely']
+            h_li = gpp.reservoir_liquid_enthalpy['most_likely']
+            h_lf = gpp.abandon_liquid_enthalpy['most_likely']
+
             if gpp.volume['pdf'] is None:
                 a = gpp.area['most_likely']
                 h = gpp.thickness['most_likely']
                 v = None
                 gpp.power_potential['base'] = gpp.power_energy(tr, ta, phi, cr, cf, rho_r,
-                                                               rho_f, rf, ce, pf, t, a, h, v, rtype)
+                                                               rho_f, rf, ce, pf, t, a, h, v,
+                                                               rho_si, sw, h_si, h_li, h_lf, rtype)
             else:
                 a = None
                 h = None
                 v = gpp.volume['most_likely']
                 gpp.power_potential['base'] = gpp.power_energy(tr, ta, phi, cr, cf, rho_r,
-                                                               rho_f, rf, ce, pf, t, a,
-                                                               h, v, rtype)
+                                                               rho_f, rf, ce, pf, t, a, h, v,
+                                                               rho_si, sw, h_si, h_li, h_lf, rtype)
+            # ******** END OF CALCULUS OF MOST LIKELY POWER POTENTIAL *****
 
+            # ***** STOCHASTIC VARIABLES **************
             tr = self.probability_distribution_function(gpp.reservoir_temp)
             ta = self.probability_distribution_function(gpp.abandon_temp)
             if gpp.porosity['pdf'] == 'L':
@@ -831,20 +1126,27 @@ class MonteCarloSimulation(object):
             pf = self.probability_distribution_function(gpp.plant_net_capacity_factor)
             t = self.probability_distribution_function(gpp.lifespan)
 
+            rho_si = self.probability_distribution_function(gpp.reservoir_steam_density)
+            sw = self.probability_distribution_function(gpp.reservoir_water_saturation)
+            h_si = self.probability_distribution_function(gpp.reservoir_steam_enthalpy)
+            h_li = self.probability_distribution_function(gpp.reservoir_liquid_enthalpy)
+            h_lf = self.probability_distribution_function(gpp.abandon_liquid_enthalpy)
+
             if gpp.volume['pdf'] is None:
                 a = self.probability_distribution_function(gpp.area)
                 h = self.probability_distribution_function(gpp.thickness)
                 v = None
                 gpp.power_potential['pdf'] = gpp.power_energy(tr, ta, phi, cr, cf, rho_r,
-                                                              rho_f, rf, ce, pf, t, a, h, v, rtype)
+                                                              rho_f, rf, ce, pf, t, a, h, v,
+                                                              rho_si, sw, h_si, h_li, h_lf, rtype)
             else:
                 a = None
                 h = None
                 v = self.probability_distribution_function(gpp.volume)
                 gpp.power_potential['pdf'] = gpp.power_energy(tr, ta, phi, cr, cf, rho_r,
-                                                              rho_f, rf, ce, pf, t, a,
-                                                              h, v, rtype)
-
+                                                              rho_f, rf, ce, pf, t, a, h, v,
+                                                              rho_si, sw, h_si, h_li, h_lf, rtype)
+            # ***** END OF STOCHASTIC VARIABLES **************
             gpp.power_potential['iterations'] = self.iterations
             p_base = gpp.power_potential['pdf'] <= gpp.power_potential['base']
             gpp.power_potential['statistics']['p_base'] = 1.0 - p_base
@@ -857,14 +1159,14 @@ class MonteCarloSimulation(object):
             gpp.power_potential['statistics']['percentiles'] = []
             for i in range(0, 19):
                 val = 5 * i + 5
-                percentile = gpp.power_potential['pdf'].percentile(val/100.0)
+                percentile = gpp.power_potential['pdf'].percentile(val / 100.0)
                 gpp.power_potential['statistics']['percentiles'].append(percentile)
-            self.calc_time = clock() - start
-
+            # self.calc_time = clock() - start
+            self.calc_time = process_time() - start
             if gpp.volume['pdf'] is not None:
                 print('HINT: VOLUME WAS USED.\nSIMULATION ... DONE')
             elif gpp.area['pdf'] is not None and gpp.thickness['pdf'] is not None and gpp.volume['pdf'] is None:
-                print('HINT: AREA AND THICKNESS WERE USED.\nSIMULATION ... DONE')
+                print('HINT: AREA AND THICKNESS WERE USED.\nSIMULATION ... DONE!')
             else:
                 print('ERROR: Distribution function must be valid: T, N, C, U, L\nSIMULATION ... FAILURE !\n')
 
@@ -879,7 +1181,27 @@ class MonteCarloSimulation(object):
 class Tools(object):
     """
     Object with helping tools
+
+    **methods
+    __init__
+    get_num_figures
+    get_num_figures_plot
+    get_eng_format
+    get_hist_bins
+    set_num_figures
+    set_num_figures_plot
+    set_eng_format
+    set_hist_bins
+    figures_to_present
+    eng_fmt
+    print_results
+    read_file_csv
+    write_file_cvs
+    set_backend_figure
+    plot_pdf
+    show_pdf
     """
+
     def __init__(self, **kwargs):
         self.fn_input = 'input.csv'
         self.fn_output = 'output.csv'
@@ -1007,22 +1329,28 @@ class Tools(object):
         x = self.eng_fmt(x, '1', self.num_figures)
 
         print("\nMAIN INFORMATION:")
-        print("Most Likely PowerGeneration ["+self.eng_format+'We]='+self.eng_fmt(base, self.eng_format, self.num_figures))
-        print("Probability of "+self.eng_fmt(base, self.eng_format, self.num_figures)+"[" + self.eng_format + 'We]='+ x)
-        print("P10% ["+self.eng_format+'We]='+self.eng_fmt(e.percentile(0.1), self.eng_format, self.num_figures))
+        print("Most Likely PowerGeneration [" + self.eng_format + 'We]=' + self.eng_fmt(base, self.eng_format,
+                                                                                        self.num_figures))
+        print("Probability of " + self.eng_fmt(base, self.eng_format,
+                                               self.num_figures) + "[" + self.eng_format + 'We]=' + x)
+        print("P10% [" + self.eng_format + 'We]=' + self.eng_fmt(e.percentile(0.1), self.eng_format, self.num_figures))
         print("\nSTATISTICAL ANALYSIS:")
-        print("Iterations="+ite)
-        print("Mean="+self.eng_fmt(e.mean, self.eng_format, self.num_figures)+"["+self.eng_format+'We]')
-        print("Median="+self.eng_fmt(e.percentile(0.5), self.eng_format, self.num_figures)+"["+self.eng_format+'We]')
-        print("Standard Deviation="+self.eng_fmt(e.std, self.eng_format, self.num_figures)+"["+self.eng_format+'We]')
-        print("Skew="+self.figures_to_present(e.skew, self.num_figures))
-        print("Kurt="+self.figures_to_present(e.kurt, self.num_figures))
-        print("Minimum="+self.eng_fmt(e.percentile(0), self.eng_format, self.num_figures)+"["+self.eng_format+'We]')
-        print("Maximum="+self.eng_fmt(e.percentile(1), self.eng_format, self.num_figures)+"["+self.eng_format+'We]')
+        print("Iterations=" + ite)
+        print("Mean=" + self.eng_fmt(e.mean, self.eng_format, self.num_figures) + "[" + self.eng_format + 'We]')
+        print("Median=" + self.eng_fmt(e.percentile(0.5), self.eng_format,
+                                       self.num_figures) + "[" + self.eng_format + 'We]')
+        print("Standard Deviation=" + self.eng_fmt(e.std, self.eng_format,
+                                                   self.num_figures) + "[" + self.eng_format + 'We]')
+        print("Skew=" + self.figures_to_present(e.skew, self.num_figures))
+        print("Kurt=" + self.figures_to_present(e.kurt, self.num_figures))
+        print("Minimum=" + self.eng_fmt(e.percentile(0), self.eng_format,
+                                        self.num_figures) + "[" + self.eng_format + 'We]')
+        print("Maximum=" + self.eng_fmt(e.percentile(1), self.eng_format,
+                                        self.num_figures) + "[" + self.eng_format + 'We]')
         for i in range(0, 19):
             val = 5 * i + 5
-            print("P"+str(val)+'%='+self.eng_fmt(e.percentile(val / 100.0), self.eng_format, self.num_figures)+
-                "["+self.eng_format+'We]')
+            print("P" + str(val) + '%=' + self.eng_fmt(e.percentile(val / 100.0), self.eng_format, self.num_figures) +
+                  "[" + self.eng_format + 'We]')
         print('\nEND')
 
     def read_file_csv(self, fn_input=None):
@@ -1039,8 +1367,8 @@ class Tools(object):
         fil = {'area': 0, 'thickness': 1, 'volume': 2, 'reservoir_temp': 3,
                'abandon_temp': 4, 'porosity': 5, 'rock_specific_heat': 6,
                'fluid_specific_heat': 7, 'rock_density': 8, 'fluid_density': 9,
-               'recovery_factor': 10, 'conversion_efficiency': 11,
-               'plant_net_capacity_factor': 12, 'lifespan': 13, 'name': 0, 'location': 0}
+               'reservoir_water_saturation': 10, 'recovery_factor': 11, 'conversion_efficiency': 12,
+               'plant_net_capacity_factor': 13, 'lifespan': 14, 'name': 0, 'location': 0}
         col = np.dtype([
             ('item', str, 50),
             ('name', str, 50),
@@ -1099,6 +1427,40 @@ class Tools(object):
             gpp.rock_density[key] = self.data_base[key][fil['rock_density']]
         for key in gpp.fluid_density:
             gpp.fluid_density[key] = self.data_base[key][fil['fluid_density']]
+
+        # ***** NEW RESERVOIR VARIABLES FOR TWO-PHASES RESERVOIR **********
+        for key in gpp.reservoir_water_saturation:
+            gpp.reservoir_water_saturation[key] = self.data_base[key][fil['reservoir_water_saturation']]
+
+        ti_min = gpp.reservoir_temp['min']
+        ti_mos = gpp.reservoir_temp['most_likely']
+        ti_max = gpp.reservoir_temp['max']
+        gpp.reservoir_steam_enthalpy['min'] = IAPWS95(T=ti_min + 273.15, x=1.0).h
+        gpp.reservoir_steam_enthalpy['most_likely'] = IAPWS95(T=ti_mos + 273.15, x=1.0).h
+        gpp.reservoir_steam_enthalpy['max'] = IAPWS95(T=ti_max + 273.15, x=1.0).h
+
+        gpp.reservoir_liquid_enthalpy['min'] = IAPWS95(T=ti_min + 273.15, x=0.0).h
+        gpp.reservoir_liquid_enthalpy['most_likely'] = IAPWS95(T=ti_mos + 273.15, x=0.0).h
+        gpp.reservoir_liquid_enthalpy['max'] = IAPWS95(T=ti_max + 273.15, x=0.0).h
+
+        gpp.reservoir_steam_density['min'] = IAPWS95(T=ti_min + 273.15, x=1.0).rho
+        gpp.reservoir_steam_density['most_likely'] = IAPWS95(T=ti_mos + 273.15, x=1.0).rho
+        gpp.reservoir_steam_density['max'] = IAPWS95(T=ti_max + 273.15, x=1.0).rho
+
+        if gpp.abandon_temp['pdf'] == 'C':
+            tf_min = gpp.abandon_temp['most_likely']
+            tf_mos = gpp.abandon_temp['most_likely']
+            tf_max = gpp.abandon_temp['most_likely']
+        else:
+            tf_min = gpp.abandon_temp['min']
+            tf_mos = gpp.abandon_temp['most_likely']
+            tf_max = gpp.abandon_temp['max']
+        gpp.abandon_liquid_enthalpy['min'] = IAPWS95(T=tf_min + 273.15, x=0.0).h
+        gpp.abandon_liquid_enthalpy['most_likely'] = IAPWS95(T=tf_mos + 273.15, x=0.0).h
+        gpp.abandon_liquid_enthalpy['max'] = IAPWS95(T=tf_max + 273.15, x=0.0).h
+
+        # ***** END RESERVOIR VARIABLES FOR TWO-PHASES RESERVOIR **********
+
         for key in gpp.conversion_efficiency:
             gpp.conversion_efficiency[key] = self.data_base[key][fil['conversion_efficiency']]
         for key in gpp.recovery_factor:
@@ -1134,11 +1496,11 @@ class Tools(object):
                'Volumetric Method and Monte Carlo Probabilistic analysis,' \
                ',,,,,,,,,,,\n#Item,Name_Place,Latitude,Longitude,Reservoir_Properties,' \
                'Symbol,Units,Min,Most_Likely,Max,Mean,Standard_Deviation,Distribution_Type\n'
-        text += '0,'+gpp.name+','+str(gpp.location['lat'])+','+str(gpp.location['lon']) + \
-                ',area,A,km2'+get_values(gpp.area)
-        text += '1,,,,thickness,h,m'+get_values(gpp.thickness)
+        text += '0,' + gpp.name + ',' + str(gpp.location['lat']) + ',' + str(gpp.location['lon']) + \
+                ',area,A,km2' + get_values(gpp.area)
+        text += '1,,,,thickness,h,m' + get_values(gpp.thickness)
 
-        text += '2,,,,volume,v,km3'+get_values(gpp.volume)
+        text += '2,,,,volume,v,km3' + get_values(gpp.volume)
 
         text += '3,,,,reservoir_temp,Tr,oC' + get_values(gpp.reservoir_temp)
         text += '4,,,,abandon_temp,Ta,oC' + get_values(gpp.abandon_temp)
@@ -1147,11 +1509,12 @@ class Tools(object):
         text += '7,,,,fluid_specific_heat,Cf,kJ/kg-oC' + get_values(gpp.fluid_specific_heat)
         text += '8,,,,rock_density,rho_r,kg/m3' + get_values(gpp.rock_density)
         text += '9,,,,fluid_density,rho_f,kg/m3' + get_values(gpp.fluid_density)
-        text += '10,,,,recovery_factor,Rf,%' + get_values(gpp.recovery_factor)
-        text += '11,,,,conversion_efficiency,Ce,%' + get_values(gpp.conversion_efficiency)
-        text += '12,,,,plant_net_capacity_factor,Pf,%' + \
+        text += '10,,,,WaterSaturation,Sw,%' + get_values(gpp.reservoir_water_saturation)
+        text += '11,,,,recovery_factor,Rf,%' + get_values(gpp.recovery_factor)
+        text += '12,,,,conversion_efficiency,Ce,%' + get_values(gpp.conversion_efficiency)
+        text += '13,,,,plant_net_capacity_factor,Pf,%' + \
                 get_values(gpp.plant_net_capacity_factor)
-        text += '13,,,,lifespan,t,years' + get_values(gpp.lifespan)
+        text += '14,,,,lifespan,t,years' + get_values(gpp.lifespan)
         output_file.write(text)
         output_file.close()
         print('WRITE TO FILE ... OK')
@@ -1335,14 +1698,15 @@ class Tools(object):
     def show_pdf():
         plt.show()
 
-# --------------------------------------
-# RUN SIMULATION
-# To import beta-library from specific folder:
-# In[1]: import sys
-# In[2]: sys.path.append('C:\Dropbox\PycharmProjects\gppeval_beta')
-# In[3]: import gppeval
-# In[4]: gppeval.__version__
-# Out[5]: '2018.10.11.0.1.dev1'
+"""
+RUN SIMULATION
+To import beta-library from specific folder:
+In[1]: import sys
+In[2]: sys.path.append('/home/user/gppeval_beta')
+In[3]: import gppeval
+In[4]: gppeval.__version__
+Out[5]: '2024.08.04.0.1.dev1'
+"""
 
 if __name__ == "__main__":
     # Test: Input data manually

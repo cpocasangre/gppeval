@@ -3,25 +3,27 @@ TOPIC
 A Python-based stochastic library for assessing geothermal power potential using the volumetric
 method in a liquid-dominated reservoir.
 
+Authors
+--------------
+- Carlos Pocasangre Jiménez (carlos.pocasangre@ues.edu.sv)
+
+- Fidel Ernesto Cortez Torres (ernestocortez.sv@ieee.org)
+
+- Rubén Alexander Henríquez Miranda (rubenhenriquez@ieee.org)
+
 ABSTRACT
 ===============================
 We present a Python-based stochastic library for assessing geothermal power
 potential using the volumetric method in a liquid-dominated reservoir.
-The specific aims of this study are to use the volumetric method, ``heat in
-place,`` to estimate electrical energy production ability from a geothermal
+The specific aims of this study are to use the volumetric method, “heat in
+place,” to estimate electrical energy production ability from a geothermal
 liquid-dominated reservoir, and to build a Python-based stochastic library
 with useful methods for running such simulations. Although licensed
 software is available, we selected the open-source programming language
 Python for this task. The Geothermal Power Potential Evaluation stochastic
-library (``gppeval``) is structured as three essential objects including a
+library (*gppeval*) is structured as three essential objects including a
 geothermal power plant module, a Monte Carlo simulation module, and a tools
-module. In this study, we use hot spring data from the municipality of
-Nombre de Jesus, El Salvador, to demonstrate how the ``gppeval`` can be used to
-assess geothermal power potential. Frequency distribution results from the
-stochastic simulation shows that this area could initially support a
-9.16-MWe power plant for 25 years, with a possible expansion to 17.1 MWe.
-Further investigations into the geothermal power potential will be
-conducted to validate the new data.
+module.
 
 For testing the application, a **Jupyter Notebook** example has been included in the `example
 folder`_.
@@ -34,6 +36,10 @@ Pocasangre, C., & Fujimitsu, Y. (2018). *A Python-based stochastic library for a
 geothermal power potential using the volumetric method in a liquid-dominated reservoir*.
 **Geothermics**, 76, 164-176.
 https://doi.org/10.1016/J.GEOTHERMICS.2018.07.009
+
+J. Lawless. 2010. Geothermal Lexicon For Resources and Reserves Definition
+and Reporting. 2nd Edition (2010) Edition. Adelaide, Southern Australia:
+Australian Geothermal Reporting Code Committee (AGRCC)
 
 INSTALLATION
 ============
@@ -48,6 +54,7 @@ or 'easy_install'), otherwise they will need to be installed manually:
 - SciPy_ : Scientific Python
 - Matplotlib_ : Python plotting library
 - Mcerp_ : Monte Carlo Error Propagation
+- Iapws_ : The InternationalAssociation for the Properties of Water and Steam
 - Beautifultable_ : Utility package to print visually appealing ASCII tables to terminal
 
 How to install
@@ -73,8 +80,16 @@ package (administrative privileges may be required).
 CHANGES OF NEW ISSUE
 ====================
 
-#. gppeval (2019.4.17.0.3.dev1).
-    Fixed bugs using "print" on Python 2.7
+#. gppeval (2024.08.04.0.1.dev1).
+    Fixed bugs.
+
+#. gppeval (2020.10.1.0.3.dev1).
+    Added tho-phases reservoir equation.
+    Fixed bugs.
+
+#. gppeval (2019.4.17.0.6.dev1).
+    Python 3.8
+    Fixed bugs.
 
 #. gppeval (2019.4.17.0.2.dev1).
     Python 3.5 available
@@ -99,6 +114,9 @@ CHANGES OF NEW ISSUE
 #. gppeval (2018.4.6.0.1.dev1).
     Original issue after have been upload as a stable.
 
+#. gppeval (2017.10.1.0.1.dev1).
+    Original issue.
+
 CONTACT
 =======
 
@@ -118,3 +136,4 @@ Please send **feature requests, bug reports, or feedback** to: `Carlos O. POCASA
 .. _Gppeval: http://github.com/cpocasangre/gppeval
 .. _example folder: https://github.com/cpocasangre/gppeval
 .. _Carlos O. POCASANGRE JIMENEZ: mailto:carlos.pocasangre@ues.edu.sv
+.. _Iapws: https://pypi.org/project/iapws/
