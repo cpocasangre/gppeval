@@ -6,9 +6,7 @@ import gppeval
 def read(file_name):
     return open(os.path.join(os.path.dirname(__file__), file_name)).read()
 
-
 readme = 'README.rst'
-license = 'LICENSE'
 
 setup(
     name=gppeval.__module_name__,
@@ -20,14 +18,30 @@ setup(
     license=gppeval.__license__,
     long_description=read(readme),
     packages=find_packages(exclude=['test*']),
+    # include_package_data=True,
     keywords=['monte carlo latin hypercube geothermal power potential volumetric method geothermal reservoir'],
-    install_requires=['numpy', 'scipy', 'matplotlib', 'mcerp', 'beautifultable'],
-    classifiers=['Development Status :: 2 - Pre-Alpha',
+    install_requires=['numpy', 
+                      'scipy', 
+                      'matplotlib', 
+                      'mcerp', 
+                      'beautifultable', 
+                      'iapws'],
+    classifiers=['Development Status :: 4 - Beta',
+                 'Environment :: Console',
+                 'Environment :: MacOS X',
+                 'Environment :: X11 Applications',
+                 'Environment :: Win32 (MS Windows)',
+                 'Natural Language :: English',
+                 'Operating System :: Microsoft',
+                 'Operating System :: POSIX :: Linux',
+                 'Operating System :: MacOS :: MacOS X',
                  'License :: OSI Approved :: MIT License',
                  'Programming Language :: Python :: 2.7',
-                 'Programming Language :: Python :: 3.5'],
+                 'Programming Language :: Python :: 3.8'],
     zip_safe=False,
-    package_data={
-        'gppeval': ['example/example.ipynb', 'example/reservoir_properties_list.csv'],
-    },
+    #package_data={
+    #    'gppeval': ['example/example.ipynb',
+    #                'example/reservoir_properties_list.csv',
+    #                'example/testGppeval.py'],
+    #},
 )
